@@ -1,0 +1,116 @@
+package rs.cyrilic.service;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import rs.cyrilic.controller.dto.UserDTO;
+import rs.cyrilic.exception.CustomNotFoundException;
+import rs.cyrilic.mapper.UserMapper;
+import rs.cyrilic.model.User;
+import rs.cyrilic.repository.UserRepository;
+
+@Service
+public class UserService {
+	
+	@Autowired
+	private UserRepository userRepository;
+	
+	@Autowired
+	private UserMapper userMapper;
+
+	@Transactional(readOnly=true)
+	public List<UserDTO> loadAll()
+	{
+		List<User> res = userRepository.findAll();
+		List<UserDTO> res1 = userMapper.enitiesToDtos(res);
+		return res1;
+	}
+	
+	@Transactional
+	public Long create(UserDTO input)
+	{
+		User entity = userMapper.dtoToEntity(input);
+		User usr = userRepository.save(entity);
+		return usr.getUserId();
+	}
+	
+	@Transactional
+	public void update(UserDTO input) throws Exception
+	{
+		User userDB = userRepository.findById(input.getUserId()).orElse(null);
+		if (input.getUserId() == null || userDB == null) {
+			throw new CustomNotFoundException("NOT FOUND");
+		}
+		
+		userMapper.updateEntityFromDto(input, userDB);
+		User usr = userRepository.save(userDB);
+	}
+	
+	@Transactional
+	public void delete(Long id)
+	{
+		userRepository.deleteById(id);
+	}
+	
+	@Transactional(readOnly=true)
+	public UserDTO findById(Long id) throws Exception
+	{
+		if (id == null) {
+			throw new CustomNotFoundException("NOT FOUND");
+		}
+		Optional<User> opt = userRepository.findById(id);
+		User usr = opt.orElseThrow(() -> new CustomNotFoundException("NOT FOUND"));
+		UserDTO userDTO = userMapper.entityToDTO(usr);
+		return userDTO;
+	}
+	
+	@Transactional(readOnly=true)
+	public boolean exists(Long id)
+	{
+		boolean usr = userRepository.existsById(id);
+		return usr;
+	}
+	
+	//custom methods
+	
+	public UserDTO findUserByName(String name) throws CustomNotFoundException {
+		User usr = userRepository.findByUserName(name);
+		UserDTO dto = userMapper.entityToDTO(usr);
+		return dto;
+	}
+	
+	public UserDTO findUserByEmail(String email) throws CustomNotFoundException {
+		if (email == null) {
+			throw new CustomNotFoundException("NOT FOUND");
+		}
+		User usr = userRepository.findByUserEmail(email);
+		UserDTO dto = userMapper.entityToDTO(usr);
+		return dto;
+	}
+	
+	public UserDTO findUserByNameAndNotId(String name, Long id) throws CustomNotFoundException {
+		User usr = userRepository.findByUserNameAndUserIdNot(name, id);
+		UserDTO dto = userMapper.entityToDTO(usr);
+		return dto;
+	}
+	
+	public UserDTO findUserByEmailAndNotId(String email, Long id) throws CustomNotFoundException {
+		if (email == null) {
+			throw new CustomNotFoundException("NOT FOUND");
+		}
+		User usr = userRepository.findByUserEmailAndUserIdNot(email, id);
+		UserDTO dto = userMapper.entityToDTO(usr);
+		return dto;
+	}
+	
+	public UserDTO findOneByUserName(String username) {
+		User usr = userRepository.findOneByUserName(username);
+		UserDTO dto = userMapper.entityToDTO(usr);
+		return dto;
+	}
+
+}
