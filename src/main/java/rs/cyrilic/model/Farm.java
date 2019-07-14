@@ -49,7 +49,7 @@ public class Farm implements Serializable {
 	
 	@OneToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="frm_acc_id")
-	private Account frmAccount;
+	private Account account;
 	
 	@CreationTimestamp
 	@Temporal(TemporalType.TIMESTAMP)
@@ -104,12 +104,12 @@ public class Farm implements Serializable {
 		this.frmZip = frmZip;
 	}
 
-	public Account getFrmAccount() {
-		return frmAccount;
+	public Account getAccount() {
+		return account;
 	}
 
-	public void setFrmAccount(Account frmAccount) {
-		this.frmAccount = frmAccount;
+	public void setAccount(Account account) {
+		this.account = account;
 	}
 
 	public Date getFrmSysCreateDate() {

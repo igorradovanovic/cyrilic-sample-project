@@ -27,7 +27,7 @@ public class FarmDTO implements Serializable {
 	private String frmCity;
 	private String frmState;
 	private String frmZip;
-	private AccountDTO frmAccount;
+	private AccountDTO account;
 	private Date frmSysCreateDate;
 	
 	public Long getFrmId() {
@@ -72,11 +72,11 @@ public class FarmDTO implements Serializable {
 	public void setFrmSysCreateDate(Date frmSysCreateDate) {
 		this.frmSysCreateDate = frmSysCreateDate;
 	}
-	public AccountDTO getFrmAccount() {
-		return frmAccount;
+	public AccountDTO geAccount() {
+		return account;
 	}
-	public void setFrmAccount(AccountDTO frmAccount) {
-		this.frmAccount = frmAccount;
+	public void setAccount(AccountDTO account) {
+		this.account = account;
 	}
 	
 	

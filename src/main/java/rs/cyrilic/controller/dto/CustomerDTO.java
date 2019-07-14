@@ -21,7 +21,7 @@ public class CustomerDTO implements Serializable {
 	private Long cstId;
 	private String cstName;
 	private String cstMainAddress;
-	private CustomerSizeDTO cstCustomerSize;
+	private CustomerSizeDTO customerSize;
 	private Date cstSysCreateDate;
 
 
@@ -55,13 +55,14 @@ public class CustomerDTO implements Serializable {
 	}
 
 
-	public CustomerSizeDTO getCstCustomerSize() {
-		return cstCustomerSize;
+
+	public CustomerSizeDTO getCustomerSize() {
+		return customerSize;
 	}
 
 
-	public void setCstCustomerSize(CustomerSizeDTO cstCustomerSize) {
-		this.cstCustomerSize = cstCustomerSize;
+	public void setCustomerSize(CustomerSizeDTO customerSize) {
+		this.customerSize = customerSize;
 	}
 
 

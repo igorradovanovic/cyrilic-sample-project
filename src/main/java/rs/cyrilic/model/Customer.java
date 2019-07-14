@@ -38,7 +38,7 @@ public class Customer implements Serializable {
 	
 	@OneToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="cst_size_id")
-	private CustomerSize cstCustomerSize;
+	private CustomerSize customerSize;
 	
 	
 	@Temporal(TemporalType.TIMESTAMP)
@@ -76,13 +76,16 @@ public class Customer implements Serializable {
 	}
 
 
-	public CustomerSize getCstCustomerSize() {
-		return cstCustomerSize;
+
+
+
+	public CustomerSize getCustomerSize() {
+		return customerSize;
 	}
 
 
-	public void setCstCustomerSize(CustomerSize cstCustomerSize) {
-		this.cstCustomerSize = cstCustomerSize;
+	public void setCustomerSize(CustomerSize customerSize) {
+		this.customerSize = customerSize;
 	}
 
 

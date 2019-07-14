@@ -40,6 +40,7 @@ public class Account implements Serializable{
 	@Column(name = "acc_valid")
 	private Boolean accValid;
 	
+	
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="acc_cst_id")
 	private Customer customer;
@@ -81,20 +82,22 @@ public class Account implements Serializable{
 		this.accValid = accValid;
 	}
 
-	public Customer getAccCustomer() {
-		return customer;
-	}
-
-	public void setAccCustomer(Customer customer) {
-		this.customer = customer;
-	}
-
 	public Date getAccSysCreateDate() {
 		return accSysCreateDate;
 	}
 
 	public void setAccSysCreateDate(Date accSysCreateDate) {
 		this.accSysCreateDate = accSysCreateDate;
+	}
+
+	
+
+	public Customer getCustomer() {
+		return customer;
+	}
+
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
 	}
 	
 	

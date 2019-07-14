@@ -48,14 +48,7 @@ public class AccountDTO {
 	}
 	
 
-	public CustomerDTO getAccCustomer() {
-		return customer;
-	}
-
-	public void setAccCustomer(CustomerDTO customer) {
-		this.customer = customer;
-	}
-
+	
 	public void setAccNumber(String accNumber) {
 		this.accNumber = accNumber;
 	}
@@ -75,6 +68,15 @@ public class AccountDTO {
 
 	public void setAccSysCreateDate(Date accSysCreateDate) {
 		this.accSysCreateDate = accSysCreateDate;
+	}
+
+
+	public CustomerDTO getCustomer() {
+		return customer;
+	}
+
+	public void setCustomer(CustomerDTO customer) {
+		this.customer = customer;
 	}
 	
 	
