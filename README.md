@@ -1,9 +1,15 @@
-# cyrilic-sample-project
+version:1.0
+
+developedBy: Igor Radovanovic
+
 DATA BASE INSTRUCTIONS
+
 To access Remotable mySql DB follow this instructions:
 
 url:https://remotemysql.com/phpmyadmin/
+
 username:m0MuZEzscT
+
 password:1Jhcz4x279
 
 
