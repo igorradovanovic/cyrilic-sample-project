@@ -34,8 +34,8 @@ public class User implements Serializable {
 	@Column(name = "usr_password")
 	private String userPassword;
 	
-	@Column(name = "usr_role")
-	private String userRole;
+	@Column(name = "usr_enabled")
+	private Boolean userEnabled;
 	
 	@Column(name = "usr_email")
 	private String userEmail;
@@ -79,12 +79,14 @@ public class User implements Serializable {
 	}
 	
 	
-	public String getUserRole() {
-		return userRole;
+
+
+	public Boolean getUserEnabled() {
+		return userEnabled;
 	}
 
-	public void setUserRole(String userRole) {
-		this.userRole = userRole;
+	public void setUserEnabled(Boolean userEnabled) {
+		this.userEnabled = userEnabled;
 	}
 
 	public String getUserEmail() {

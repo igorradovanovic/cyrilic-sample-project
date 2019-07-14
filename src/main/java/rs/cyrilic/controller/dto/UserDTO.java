@@ -20,7 +20,7 @@ public class UserDTO implements Serializable {
 	private Long userId;
 	private String userName;
 	private String userPassword;
-	private String userRole;
+	private Boolean userEnabled;
 	private String userEmail;
 	private Date userTokenExp;
 	private Date userExpDate;
@@ -59,13 +59,6 @@ public class UserDTO implements Serializable {
 		this.userPassword = userPassword;
 	}
 
-	public String getUserRole() {
-		return userRole;
-	}
-
-	public void setUserRole(String userRole) {
-		this.userRole = userRole;
-	}
 
 	public Date getUserTokenExp() {
 		return userTokenExp;
@@ -97,6 +90,14 @@ public class UserDTO implements Serializable {
 
 	public void setUserSysCreateDate(Date userSysCreateDate) {
 		this.userSysCreateDate = userSysCreateDate;
+	}
+
+	public Boolean getUserEnabled() {
+		return userEnabled;
+	}
+
+	public void setUserEnabled(Boolean userEnabled) {
+		this.userEnabled = userEnabled;
 	}
 	
 	

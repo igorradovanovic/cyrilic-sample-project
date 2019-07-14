@@ -10,12 +10,13 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import rs.cyrilic.security.AuthoritiesConstants;
+import rs.cyrilic.security.Http401UnauthorizedEntryPoint;
+import rs.cyrilic.security.jwt.JWTConfigurer;
+import rs.cyrilic.security.jwt.TokenProvider;
 
 
 
@@ -23,11 +24,80 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
-	   @Override
-	    protected void configure(HttpSecurity httpSecurity) throws Exception {
-	        httpSecurity.authorizeRequests().antMatchers("/").permitAll();
+//	   @Override
+//	    protected void configure(HttpSecurity httpSecurity) throws Exception {
+//	        httpSecurity.authorizeRequests().antMatchers("/").permitAll();
+//	}
+
+	@Autowired
+	private UserDetailsService userDetailsService;
+
+	@Autowired
+	private Http401UnauthorizedEntryPoint authenticationEntryPoint;
+
+	@Autowired
+	private TokenProvider tokenProvider;
+	
+	@Autowired
+	private AuthenticationManagerBuilder authenticationManagerBuilder;
+
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+			
+		http
+		  .exceptionHandling()
+		  .authenticationEntryPoint(authenticationEntryPoint) .and() .csrf()
+		  .disable() .headers() .frameOptions() .disable() .and()
+		  .sessionManagement()
+		  .sessionCreationPolicy(SessionCreationPolicy.STATELESS) .and()
+		  .httpBasic() .and() .authorizeRequests()
+		  .antMatchers("/config/**").hasAuthority(AuthoritiesConstants.ADMIN)
+		  .antMatchers("/api/auth").permitAll()
+		  // in real env this must be peremited forgot/reset controller toDo
+		  .antMatchers("/api/forgot").permitAll()
+		  .antMatchers("/api/reset").permitAll()
+		  
+		  .antMatchers("/api/**").authenticated()
+		  .antMatchers("/greeting").permitAll()
+		  
+
+		  .antMatchers("/management/**").hasAuthority(AuthoritiesConstants.
+		  ADMIN) .antMatchers("/assets/**").permitAll() //
+		  .antMatchers("/*").permitAll() 
+		  //to enable swagger testing, security
+		  .antMatchers("/v2/api-docs", "/configuration/ui", "/swagger-resources", "/configuration/security", "/swagger-resources/configuration/ui", "/swagger-resources/configuration/security", "/swagger-ui.html", "/webjars/**").hasAuthority(AuthoritiesConstants.ADMIN)
+		  .anyRequest().authenticated() .and()
+		  .apply(securityConfigurerAdapter());
+		 
 	}
 
+	@Bean
+    public AuthenticationManager authenticationManager() {
+        try {
+            return authenticationManagerBuilder
+                .userDetailsService(userDetailsService)
+                .passwordEncoder(passwordEncoder())
+                .and()
+                .build();
+        } catch (Exception e) {
+            throw new BeanInitializationException("Security configuration failed", e);
+        }
+    }
+
+	@Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+	
+
+	private JWTConfigurer securityConfigurerAdapter() {
+		return new JWTConfigurer(tokenProvider);
+	}
+
+	public static void main(String[] args) {
+		BCryptPasswordEncoder b = new BCryptPasswordEncoder();
+		System.out.println(b.encode("password0511"));
+	}
 
 
 }
