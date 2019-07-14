@@ -14,5 +14,8 @@ public interface UserRolesRepository extends CustomRepository<UserRoles, Long> {
 	
 	@Query(value = "SELECT * FROM user_roles WHERE urr_acc_id = :accId", nativeQuery = true)
 	List<UserRoles> findAllByAccId(@Param("accId") Long accId);
+	
+
+	
 
 }

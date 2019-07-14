@@ -15,8 +15,10 @@ import rs.cyrilic.mapper.UserRolesMapper;
 import rs.cyrilic.model.UserRoles;
 import rs.cyrilic.model.Account;
 import rs.cyrilic.model.Role;
+import rs.cyrilic.model.User;
 import rs.cyrilic.repository.AccountRepository;
 import rs.cyrilic.repository.RoleRepository;
+import rs.cyrilic.repository.UserRepository;
 import rs.cyrilic.repository.UserRolesRepository;
 
 public class UserRolesService {
@@ -28,7 +30,7 @@ public class UserRolesService {
 	RoleRepository roleRepository;
 	
 	@Autowired
-	AccountRepository accountRepository;
+	UserRepository userRepository;
 	
 	@Autowired
 	UserRolesMapper userRolesMapper;
@@ -42,9 +44,7 @@ public class UserRolesService {
 
 	@Transactional
 	public Long create(UserRolesDTO userRolesDTO) {
-		Account acc = accountRepository.findOneByAccName(SecurityContextHolder.getContext().getAuthentication().getName());
 		UserRoles userRoles = userRolesMapper.dtoToEntity(userRolesDTO);
-		Role r1 = roleRepository.findById(userRoles.getRole().getRolId()).orElse(null);
 		UserRoles urr = userRolesRepository.save(userRoles);
 		return urr.getUrrId();
 	}
@@ -53,8 +53,7 @@ public class UserRolesService {
 	public void update(UserRolesDTO userRolesDTO) throws Exception {
 		UserRoles userRolesDB = userRolesRepository.findById(userRolesDTO.getUrrId()).orElse(null);
 	
-		Account acc = accountRepository.findOneByAccName(SecurityContextHolder.getContext().getAuthentication().getName());
-
+		
 		userRolesDB.setRole(new Role());
 
 		userRolesMapper.updateEntityFromDto(userRolesDTO, userRolesDB);

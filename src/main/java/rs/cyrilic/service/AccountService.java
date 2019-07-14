@@ -4,12 +4,15 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import rs.cyrilic.mapper.AccountMapper;
 import rs.cyrilic.model.Account;
+import rs.cyrilic.model.User;
 import rs.cyrilic.repository.AccountRepository;
+import rs.cyrilic.repository.UserRepository;
 import rs.cyrilic.controller.dto.AccountDTO;
 import rs.cyrilic.exception.CustomNotFoundException;
 
@@ -19,6 +22,9 @@ public class AccountService {
 
 	@Autowired
 	private AccountRepository accountRepository;
+	
+	@Autowired
+	private UserRepository userRepository;
 	
 	
 	@Autowired
@@ -82,6 +88,18 @@ public class AccountService {
 		Account acc = accountRepository.findByAccName(name);
 		AccountDTO dto = accountMapper.entityToDTO(acc);
 		return dto;
+	}
+	
+	@Transactional(readOnly=true)
+	public List<AccountDTO> loadAllByPrivilege()
+	{
+		User user = userRepository.findOneByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
+		List<Account> res = accountRepository.getAccountsByUserAccess(user.getUserId());
+		if(res == null || res.isEmpty()) {
+			return null;
+		}
+		List<AccountDTO> res1 = accountMapper.enitiesToDtos(res);
+		return res1;
 	}
 
 }

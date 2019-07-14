@@ -27,7 +27,11 @@ public class UserController {
 
 	@RequestMapping(value = "/users", method = RequestMethod.GET)
 	public ResponseEntity<?> loadAll() {
-		List<UserDTO> res = userService.loadAll();
+		//List<UserDTO> res = userService.loadAll();
+		List<UserDTO> res = userService.loadAllByPrivilege();
+		if (res == null) {
+			return new ResponseEntity<>(new ErrorMessage("ACCESS_IS_DENIED_CHECK_YOUR_ACCOUNT_PRIVIELGE"), HttpStatus.UNAUTHORIZED);
+		}
 		return new ResponseEntity(new ResponseWrapper(res), HttpStatus.OK);
 	}
 

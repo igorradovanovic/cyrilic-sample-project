@@ -4,19 +4,25 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import rs.cyrilic.controller.dto.CustomerDTO;
 import rs.cyrilic.exception.CustomNotFoundException;
 import rs.cyrilic.mapper.CustomerMapper;
 import rs.cyrilic.model.Customer;
+import rs.cyrilic.model.User;
 import rs.cyrilic.repository.CustomerRepository;
+import rs.cyrilic.repository.UserRepository;
 
 @Service
 public class CustomerService {
 	
 	@Autowired
 	private CustomerRepository customerRepository;
+	
+	@Autowired
+	private UserRepository userRepository;
 	
 	
 	@Autowired
@@ -73,6 +79,19 @@ public class CustomerService {
 	{
 		boolean cas = customerRepository.existsById(id);
 		return cas;
+	}
+	
+	//custom method to take only customer privileged to account
+	@Transactional(readOnly=true)
+	public List<CustomerDTO> loadAllByPrivilege()
+	{
+		User user = userRepository.findOneByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
+		List<Customer> res = customerRepository.getCustomerByAccountPrivilege(user.getUserId());
+		if(res == null || res.isEmpty()) {
+			return null;
+		}
+		List<CustomerDTO> res1 = customerMapper.enitiesToDtos(res);
+		return res1;
 	}
 
 }

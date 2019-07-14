@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import rs.cyrilic.controller.dto.CustomerDTO;
+import rs.cyrilic.controller.dto.system.ErrorMessage;
 import rs.cyrilic.controller.dto.system.ResponseWrapper;
 import rs.cyrilic.exception.CustomNotFoundException;
 import rs.cyrilic.service.CustomerService;
@@ -26,7 +27,11 @@ public class CustomerController {
 	
 	@RequestMapping(value = "/customers", method = RequestMethod.GET)
 	public ResponseEntity<?> loadAll() {
-		List<CustomerDTO> res = customerService.loadAll();
+		//List<CustomerDTO> res = customerService.loadAll();
+		List<CustomerDTO> res = customerService.loadAllByPrivilege();
+		if (res == null) {
+			return new ResponseEntity<>(new ErrorMessage("ACCESS_IS_DENIED_CHECK_YOUR_ACCOUNT_PRIVIELGE"), HttpStatus.UNAUTHORIZED);
+		}
 		return new ResponseEntity(new ResponseWrapper(res), HttpStatus.OK);
 	}
 	

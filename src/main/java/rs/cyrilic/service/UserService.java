@@ -4,10 +4,14 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import rs.cyrilic.controller.dto.UserDTO;
+import rs.cyrilic.controller.dto.system.ErrorMessage;
 import rs.cyrilic.exception.CustomNotFoundException;
 import rs.cyrilic.mapper.UserMapper;
 import rs.cyrilic.model.User;
@@ -111,6 +115,20 @@ public class UserService {
 		User usr = userRepository.findOneByUserName(username);
 		UserDTO dto = userMapper.entityToDTO(usr);
 		return dto;
+	}
+	
+	//only admin can see users
+	@Transactional(readOnly=true)
+	public List<UserDTO> loadAllByPrivilege()
+	{	
+		User user = userRepository.findOneByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
+		if(!userRepository.getUserRole(user.getUserId()).equals("ROLE_ADMIN")) {
+			return null;
+		}else {
+			List<User> res = userRepository.findAll();
+			List<UserDTO> res1 = userMapper.enitiesToDtos(res);
+			return res1;
+		}
 	}
 
 }

@@ -16,6 +16,9 @@ public interface AccountRepository extends CustomRepository<Account, Long> {
 	
 	Account findOneByAccName(String name);
 	
+	@Query(value = "SELECT *FROM accounts WHERE acc_id in \r\n" + 
+			"(SELECT usa_acc_id FROM user_access WHERE usa_usr_id = :usr_id )", nativeQuery=true)
+	List<Account>getAccountsByUserAccess(@Param("usr_id")Long usaUsrId);
 	
 	
 	

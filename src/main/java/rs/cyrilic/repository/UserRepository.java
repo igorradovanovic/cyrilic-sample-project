@@ -25,4 +25,10 @@ public interface UserRepository extends CustomRepository<User, Long> {
 	
 	@Query("SELECT r from UserRoles ur INNER JOIN ur.role r INNER JOIN ur.user u WHERE u.userName = :usrName")
     List<Role> findAuthorities(@Param("usrName") String username);
+	
+	@Query(value = "SELECT roles.rol_name FROM user_roles\r\n" + 
+			"Inner join roles\r\n" + 
+			"on  user_roles.urr_rol_id = roles.rol_id \r\n" + 
+			"where user_roles.urr_usr_id = :usrId", nativeQuery = true)
+	String getUserRole(@Param("usrId") Long usrId);
 }

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,13 +15,18 @@ import rs.cyrilic.mapper.CustomerMapper;
 import rs.cyrilic.mapper.FarmMapper;
 import rs.cyrilic.model.Customer;
 import rs.cyrilic.model.Farm;
+import rs.cyrilic.model.User;
 import rs.cyrilic.repository.FarmRepository;
+import rs.cyrilic.repository.UserRepository;
 
 @Service
 public class FarmService {
 	
 	@Autowired
 	private FarmRepository farmRepository;
+	
+	@Autowired
+	private UserRepository userRepository;
 	
 	@Autowired
 	private FarmMapper farmMapper;
@@ -76,6 +82,18 @@ public class FarmService {
 	{
 		boolean frm = farmRepository.existsById(id);
 		return frm;
+	}
+	
+	@Transactional(readOnly=true)
+	public List<FarmDTO> loadAllByUserPrivilege()
+	{
+		User user = userRepository.findOneByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
+		List<Farm> res = farmRepository.getFarmsByUserAccess(user.getUserId());
+		if(res == null) {
+			return null;
+		}
+		List<FarmDTO> res1 = farmMapper.enitiesToDtos(res);
+		return res1;
 	}
 
 

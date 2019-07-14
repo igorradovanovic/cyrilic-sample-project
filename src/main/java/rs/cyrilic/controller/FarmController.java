@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import rs.cyrilic.controller.dto.FarmDTO;
+import rs.cyrilic.controller.dto.system.ErrorMessage;
 import rs.cyrilic.controller.dto.system.ResponseWrapper;
 import rs.cyrilic.exception.CustomNotFoundException;
 import rs.cyrilic.service.FarmService;
@@ -26,7 +27,11 @@ public class FarmController {
 	
 	@RequestMapping(value = "/farms", method = RequestMethod.GET)
 	public ResponseEntity<?> loadAll() {
-		List<FarmDTO> res = farmService.loadAll();
+		//List<FarmDTO> res = farmService.loadAll();
+		List<FarmDTO> res = farmService.loadAllByUserPrivilege();
+		if (res == null) {
+			return new ResponseEntity<>(new ErrorMessage("ACCESS_IS_DENIED_CHECK_YOUR_ACCOUNT_PRIVIELGE"), HttpStatus.UNAUTHORIZED);
+		}
 		return new ResponseEntity(new ResponseWrapper(res), HttpStatus.OK);
 	}
 	
